@@ -43,15 +43,15 @@ export async function getDocuments(page: number = 1, limit: number = 10): Promis
 }
 
 export async function getDocument(id: string): Promise<Document> {
-    const filePath = path.join(UPLOAD_DIR, id);
-    const stats = await fs.stat(filePath);
-    
-    return {
-      id,
-      name: id.substring(id.indexOf('-') + 1),
-      size: stats.size,
-      type: path.extname(id).slice(1),
-      url: `/api/uploads/${id}`,
-      uploadDate: stats.mtime.toISOString(),
-    };
-  }
+  const filePath = path.join(UPLOAD_DIR, id);
+  const stats = await fs.stat(filePath);
+  
+  return {
+    id,
+    name: id.substring(id.indexOf('-') + 1),
+    size: stats.size,
+    type: path.extname(id).slice(1),
+    url: `/api/uploads/${id}`, // Make sure this matches your API route
+    uploadDate: stats.mtime.toISOString(),
+  };
+}

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getDocuments, uploadFile } from "@/lib/storage";
-import { error } from "console";
+
 
 export async function  GET(req: NextRequest) {
     const searchParams = req.nextUrl.searchParams;

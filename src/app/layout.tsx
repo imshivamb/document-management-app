@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, DM_Sans, Outfit } from "next/font/google";
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const dmsans = DM_Sans({ subsets: ["latin"] });
 const outfit = Outfit({ subsets: ["latin"] });
@@ -21,6 +22,7 @@ export default function RootLayout({
         <div className="absolute top-0 -z-10 h-full w-full bg-white">
           <div className="absolute bottom-auto left-auto right-0 top-0 h-[500px] w-[500px] -translate-x-[30%] translate-y-[20%] rounded-full bg-[rgba(255,104,104,0.3)] opacity-50 blur-[80px]"></div>
           <div className="z-10">{children}</div>
+          <Toaster />
         </div>
       </body>
     </html>
