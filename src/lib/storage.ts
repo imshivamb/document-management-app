@@ -1,57 +1,65 @@
-import fs from 'fs/promises';
-import path from 'path';
+import axios from 'axios';
 import { Document } from './types';
+import { db, documents } from './db';
+import { eq, and } from 'drizzle-orm';
 
-const UPLOAD_DIR = path.join(process.cwd(), 'uploads');
+const UPLOAD_URL = 'https://0x0.st';
 
-export async function uploadFile(file: File): Promise<Document> {
-    const fileName = `${Date.now()}-${file.name}`;
-    const filePath = path.join(UPLOAD_DIR, fileName);
+export async function uploadFile(file: File, userId: string): Promise<Document> {
+  const formData = new FormData();
+  formData.append('file', file);
 
-    await fs.mkdir(UPLOAD_DIR, {recursive: true});
-    await fs.writeFile(filePath, Buffer.from(await file.arrayBuffer()));
+  try {
+    const response = await axios.post(UPLOAD_URL, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
 
-    return {
-        id: fileName,
-        name: file.name,
-        size: file.size,
-        type: file.type,
-        url: `/api/uploads/${fileName}`,
-        uploadDate: new Date().toISOString(),
-      };
+    console.log('Upload response:', response.data);
+
+    const fileUrl = response.data.trim();
+    const document: Document = {
+      id: fileUrl.split('/').pop() || '',
+      name: file.name,
+      size: file.size,
+      type: file.type,
+      url: fileUrl,
+      uploadDate: new Date().toISOString(),
+      userId,
+    };
+
+    // Insert document metadata into the database
+    await db.insert(documents).values(document);
+
+    return document;
+  } catch (error) {
+    console.error('Upload error:', error);
+    if (axios.isAxiosError(error)) {
+      console.error('Response data:', error.response?.data);
+      console.error('Response status:', error.response?.status);
+    }
+    throw new Error('File upload failed');
+  }
 }
 
-export async function getDocuments(page: number = 1, limit: number = 10): Promise<Document[]> {
-    const files = await fs.readdir(UPLOAD_DIR);
-    const start = (page - 1) * limit;
-    const end = start + limit;
-
-    const documentPromises = files.slice(start, end).map(async (fileName) => {
-        const filePath = path.join(UPLOAD_DIR, fileName);
-        const stats = await fs.stat(filePath);
-        return {
-            id: fileName,
-            name: fileName.substring(fileName.indexOf('-') + 1),
-            size: stats.size,
-            type: path.extname(fileName).slice(1),
-            url: `/api/uploads/${fileName}`,
-            uploadDate: stats.mtime.toISOString(),
-          };
-          
-    })
-    return Promise.all(documentPromises);
+export async function getDocuments(page: number = 1, limit: number = 10, userId: string): Promise<Document[]> {
+  const offset = (page - 1) * limit;
+  return db.select().from(documents)
+    .where(eq(documents.userId, userId))
+    .limit(limit)
+    .offset(offset);
 }
 
-export async function getDocument(id: string): Promise<Document> {
-  const filePath = path.join(UPLOAD_DIR, id);
-  const stats = await fs.stat(filePath);
+export async function getDocument(id: string, userId: string): Promise<Document | null> {
+  const result = await db.select()
+    .from(documents)
+    .where(and(
+      eq(documents.id, id),
+      eq(documents.userId, userId)
+    ))
+    .limit(1)
+    .all();
   
-  return {
-    id,
-    name: id.substring(id.indexOf('-') + 1),
-    size: stats.size,
-    type: path.extname(id).slice(1),
-    url: `/api/uploads/${id}`, // Make sure this matches your API route
-    uploadDate: stats.mtime.toISOString(),
-  };
+  return result[0] || null;
 }
