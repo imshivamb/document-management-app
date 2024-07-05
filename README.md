@@ -10,7 +10,6 @@ This Document Management Dashboard is a Next.js 14 application that allows users
 - Document Upload
 - Document List with Pagination
 - Document Preview
-- Search Functionality
 - Responsive Design
 
 ## Tech Stack
