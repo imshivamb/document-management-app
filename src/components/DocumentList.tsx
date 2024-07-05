@@ -33,13 +33,15 @@ export default function DocumentList() {
 
   return (
     <div>
-      <input
-        type="text"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        placeholder="Search documents by name"
-        className="border p-2 mb-4 rounded w-full"
-      />
+      {documents.length > 0 && (
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+          placeholder="Search documents by name"
+          className="border p-2 mb-4 rounded w-full"
+        />
+      )}
       <ul className="space-y-4">
         {filteredDocuments.length > 0 ? (
           filteredDocuments.map((doc) => (
