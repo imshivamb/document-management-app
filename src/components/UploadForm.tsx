@@ -10,6 +10,7 @@ const UploadForm = () => {
   const [file, setFile] = useState<File | null>(null);
   const [error, setError] = useState<string>();
   const { toast } = useToast();
+  const [submitting, setSubmitting] = useState<boolean>(false);
 
   const validateFile = (file: File): string => {
     if (file.size > MAX_FILE_SIZE) {
@@ -38,6 +39,7 @@ const UploadForm = () => {
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (!file) return;
+    setSubmitting(true);
 
     const formData = new FormData();
     formData.append("file", file);
@@ -64,6 +66,8 @@ const UploadForm = () => {
       } else {
         setError("An unknown error occurred");
       }
+    } finally {
+      setSubmitting(false);
     }
   };
   return (
@@ -85,7 +89,7 @@ const UploadForm = () => {
         disabled={!file || !!error}
         className="bg-[#f20819] text-white px-4 py-2 rounded-full hover:bg-[#f20819] disabled:bg-gray-300"
       >
-        Upload
+        {submitting ? "Uploading..." : "Upload"}
       </button>
     </form>
   );
