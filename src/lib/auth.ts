@@ -3,7 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { DrizzleAdapter } from "@auth/drizzle-adapter"
 import { db } from "./db"
 import { ExtendedSession } from "./types"
-import { users } from "./db"  // Import your users table
+import { users } from "./db" 
 import { eq } from "drizzle-orm"
 import bcrypt from "bcryptjs"
 import { Adapter } from "next-auth/adapters"
@@ -23,22 +23,23 @@ export const authOptions: NextAuthOptions = {
           return null
         }
       
-        const user = await db.select().from(users).where(eq(users.email, credentials.email)).get()
+        const userResults = await db.select().from(users).where(eq(users.email, credentials.email)).execute()
+        const foundUser = userResults[0]
       
-        if (!user) {
+        if (!foundUser) {
           return null
         }
       
-        const isPasswordValid = await bcrypt.compare(credentials.password, user.password)
+        const isPasswordValid = await bcrypt.compare(credentials.password, foundUser.password)
       
         if (!isPasswordValid) {
           return null
         }
       
         return {
-          id: user.id,
-          name: user.name,
-          email: user.email,
+          id: foundUser.id,
+          name: foundUser.name,
+          email: foundUser.email,
         }
       }
     })

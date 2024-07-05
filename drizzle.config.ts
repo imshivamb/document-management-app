@@ -2,11 +2,11 @@
 
 import { defineConfig } from "drizzle-kit"
 export default defineConfig({
-    dialect: "sqlite",
+    dialect: "postgresql",
     schema: './src/lib/db.ts',
     out: './drizzle',
     dbCredentials: {
-        url: './sqlite.db',
+        url: 'postgresql://neondb_owner:6dp7AQTIgCVP@ep-ancient-sun-a5ovaik2.us-east-2.aws.neon.tech/neondb?sslmode=require',
       }
     
 })

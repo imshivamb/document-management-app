@@ -48,7 +48,8 @@ export async function getDocuments(page: number = 1, limit: number = 10, userId:
   return db.select().from(documents)
     .where(eq(documents.userId, userId))
     .limit(limit)
-    .offset(offset);
+    .offset(offset)
+    .execute();
 }
 
 export async function getDocument(id: string, userId: string): Promise<Document | null> {
@@ -59,7 +60,7 @@ export async function getDocument(id: string, userId: string): Promise<Document 
       eq(documents.userId, userId)
     ))
     .limit(1)
-    .all();
+    .execute();
   
   return result[0] || null;
 }

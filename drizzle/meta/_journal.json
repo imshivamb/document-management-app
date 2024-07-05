@@ -15,6 +15,13 @@
       "when": 1720175167080,
       "tag": "0001_rapid_captain_marvel",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1720196034490,
+      "tag": "0002_numerous_lenny_balinger",
+      "breakpoints": true
     }
   ]
 }

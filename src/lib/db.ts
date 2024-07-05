@@ -1,22 +1,26 @@
-import { drizzle } from 'drizzle-orm/better-sqlite3';
-import Database from 'better-sqlite3';
-import { sql } from 'drizzle-orm';
-import { sqliteTable, text, integer } from 'drizzle-orm/sqlite-core';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import { Pool } from 'pg';
+import { pgTable, text, integer, timestamp } from 'drizzle-orm/pg-core';
 
+// Database connection
+const pool = new Pool({
+  connectionString: process.env.DRIZZLE_DATABASE_URL,
+});
 
-const sqlite = new Database('sqlite.db');
-export const db = drizzle(sqlite);
+export const db = drizzle(pool);
 
-export const users = sqliteTable('user', {
+// User table
+export const users = pgTable('user', {
   id: text('id').notNull().primaryKey(),
   name: text('name'),
   email: text('email').notNull().unique(),
-  emailVerified: integer('emailVerified', { mode: 'timestamp_ms' }),
+  emailVerified: timestamp('emailVerified'),
   image: text('image'),
   password: text('password').notNull(),
 });
 
-export const accounts = sqliteTable('account', {
+// Account table
+export const accounts = pgTable('account', {
   userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
   type: text('type').notNull(),
   provider: text('provider').notNull(),
@@ -30,24 +34,27 @@ export const accounts = sqliteTable('account', {
   session_state: text('session_state'),
 });
 
-export const sessions = sqliteTable('session', {
+// Session table
+export const sessions = pgTable('session', {
   sessionToken: text('sessionToken').notNull().primaryKey(),
   userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  expires: integer('expires', { mode: 'timestamp_ms' }).notNull(),
+  expires: timestamp('expires').notNull(),
 });
 
-export const verificationTokens = sqliteTable('verificationToken', {
+// Verification token table
+export const verificationTokens = pgTable('verificationToken', {
   identifier: text('identifier').notNull(),
   token: text('token').notNull(),
-  expires: integer('expires', { mode: 'timestamp_ms' }).notNull(),
+  expires: timestamp('expires').notNull(),
 });
 
-export const documents = sqliteTable('document', {
-    id: text('id').notNull().primaryKey(),
-    name: text('name').notNull(),
-    size: integer('size').notNull(),
-    type: text('type').notNull(),
-    url: text('url').notNull(),
-    uploadDate: text('uploadDate').notNull(),
-    userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
-  });
+// Document table
+export const documents = pgTable('document', {
+  id: text('id').notNull().primaryKey(),
+  name: text('name').notNull(),
+  size: integer('size').notNull(),
+  type: text('type').notNull(),
+  url: text('url').notNull(),
+  uploadDate: text('uploadDate').notNull(),
+  userId: text('userId').notNull().references(() => users.id, { onDelete: 'cascade' }),
+});

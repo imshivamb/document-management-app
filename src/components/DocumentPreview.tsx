@@ -1,23 +1,41 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { Document } from "@/lib/types";
+import { Document as DocumentType } from "@/lib/types";
 
 interface DocumentPreviewProps {
   documentId: string;
 }
 
+function PDFViewer({ url }: { url: string }) {
+  return (
+    <object data={url} type="application/pdf" width="100%" height="600px">
+      <p>
+        Unable to display PDF file.{" "}
+        <a href={url} target="_blank" rel="noopener noreferrer">
+          Download
+        </a>{" "}
+        instead.
+      </p>
+    </object>
+  );
+}
+
 export default function DocumentPreview({ documentId }: DocumentPreviewProps) {
-  const [document, setDocument] = useState<Document | null>(null);
+  const [document, setDocument] = useState<DocumentType | null>(null);
 
   useEffect(() => {
     async function fetchDocument() {
-      const res = await fetch(`/api/documents/${documentId}`);
-      if (res.ok) {
-        const data = await res.json();
-        setDocument(data);
-      } else {
-        console.error("Failed to fetch document");
+      try {
+        const res = await fetch(`/api/documents/${documentId}`);
+        if (res.ok) {
+          const data = await res.json();
+          setDocument(data);
+        } else {
+          console.error("Failed to fetch document");
+        }
+      } catch (error) {
+        console.error("Error fetching document:", error);
       }
     }
     fetchDocument();
@@ -25,35 +43,83 @@ export default function DocumentPreview({ documentId }: DocumentPreviewProps) {
 
   if (!document) return <div>Loading...</div>;
 
+  const renderPreview = () => {
+    const fileType = document.type.split("/")[0];
+    const fileExtension = document.name.split(".").pop()?.toLowerCase();
+
+    switch (fileType) {
+      case "image":
+        return (
+          <img
+            src={document.url}
+            alt={document.name}
+            className="max-w-full h-auto"
+          />
+        );
+      case "application":
+        if (document.type === "application/pdf") {
+          return <PDFViewer url={document.url} />;
+        } else if (
+          ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(
+            fileExtension || ""
+          )
+        ) {
+          return (
+            <iframe
+              src={`https://docs.google.com/gview?url=${encodeURIComponent(
+                document.url
+              )}&embedded=true`}
+              width="100%"
+              height="600px"
+              frameBorder="0"
+            />
+          );
+        }
+      // For other application types, fall through to default
+      case "text":
+        return (
+          <iframe
+            src={document.url}
+            width="100%"
+            height="600px"
+            frameBorder="0"
+          />
+        );
+      case "audio":
+        return (
+          <audio controls>
+            <source src={document.url} type={document.type} />
+            Your browser does not support the audio element.
+          </audio>
+        );
+      case "video":
+        return (
+          <video width="100%" height="auto" controls>
+            <source src={document.url} type={document.type} />
+            Your browser does not support the video tag.
+          </video>
+        );
+      default:
+        return (
+          <p>
+            Preview not available for this file type.{" "}
+            <a
+              href={document.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500 hover:underline"
+            >
+              Download file
+            </a>
+          </p>
+        );
+    }
+  };
+
   return (
     <div className="mt-4">
       <h2 className="text-2xl font-bold mb-2">{document.name}</h2>
-      {document.type.startsWith("image/") ? (
-        <img
-          src={document.url}
-          alt={document.name}
-          className="max-w-full h-auto"
-        />
-      ) : document.type === "application/pdf" ? (
-        <iframe
-          src={document.url}
-          width="100%"
-          height="600px"
-          className="border-0"
-        />
-      ) : (
-        <p>
-          Preview not available for this file type.{" "}
-          <a
-            href={document.url}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-blue-500 hover:underline"
-          >
-            Download file
-          </a>
-        </p>
-      )}
+      {renderPreview()}
     </div>
   );
 }

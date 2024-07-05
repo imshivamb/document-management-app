@@ -21,20 +21,24 @@ export default function DocumentList() {
   return (
     <div>
       <ul className="space-y-4">
-        {documents.map((doc) => (
-          <li key={doc.id} className="border p-4 rounded shadow">
-            <Link
-              href={`/documents/${doc.id}`}
-              className="text-[#f20819] hover:underline"
-            >
-              {doc.name}
-            </Link>
-            <p className="text-sm text-gray-600">
-              Size: {doc.size} bytes, Uploaded:{" "}
-              {new Date(doc.uploadDate).toLocaleString()}
-            </p>
-          </li>
-        ))}
+        {documents.length > 0 ? (
+          documents.map((doc) => (
+            <li key={doc.id} className="border p-4 rounded shadow">
+              <Link
+                href={`/documents/${doc.id}`}
+                className="text-[#f20819] hover:underline"
+              >
+                {doc.name}
+              </Link>
+              <p className="text-sm text-gray-600">
+                Size: {doc.size} bytes, Uploaded:{" "}
+                {new Date(doc.uploadDate).toLocaleString()}
+              </p>
+            </li>
+          ))
+        ) : (
+          <p>No documents available.</p>
+        )}
       </ul>
       <div className="mt-4 space-x-2">
         <button

@@ -59,7 +59,7 @@ export default function SignIn() {
         </div>
         <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
           <div className="rounded-md shadow-sm -space-y-px">
-            <div>
+            <div className="mb-4">
               <label htmlFor="email-address" className="sr-only">
                 Email address
               </label>
@@ -75,7 +75,7 @@ export default function SignIn() {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            <div>
+            <div className="mb-4">
               <label htmlFor="password" className="sr-only">
                 Password
               </label>
@@ -98,7 +98,7 @@ export default function SignIn() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-[#f20819] hover:bg-[#f20819] rounded-full hover:-translate-y-1 transition-all ease-in-out duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-[#f20819] hover:bg-[#f20819] rounded-full hover:-translate-y-1 transition-all ease-in-out duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               Sign in
             </button>
