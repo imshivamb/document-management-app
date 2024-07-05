@@ -43,6 +43,18 @@ Create a `.env.local` file in the root directory and add the following:
 
 NEXTAUTH_URL=http://localhost:3000
 NEXTAUTH_SECRET=your_secret_here
+DRIZZLE_DATABASE_URL=""
+
+make sure to put your database url in the env, you can get one from a provider like neon.tech 
+OR
+you can run a postgres bg locally using docker by running this command
+
+docker run --name some-postgres -e POSTGRES_PASSWORD=mysecretpassword -d postgres
+
+the url would look like this
+
+postgresql://username:password@hostname:port/dbname
+
 
 4. Set up the database:
 
