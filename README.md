@@ -1,4 +1,4 @@
-Sure! Here is the formatted README file for your Document Management Dashboard:
+
 
 # Document Management Dashboard
 
@@ -88,4 +88,4 @@ This Document Management Dashboard is a Next.js 14 application that allows users
     npm run db:studio
     ```
 
-This should make your README file more structured and easier to read.
+
