@@ -112,7 +112,7 @@ export default function SignUp() {
           <div>
             <button
               type="submit"
-              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-[#f20819] hover:bg-[#f20819] rounded-full hover:-translate-y-1 transition-all ease-in-out duration-300 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-red-500"
             >
               Sign up
             </button>

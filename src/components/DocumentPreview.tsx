@@ -7,20 +7,6 @@ interface DocumentPreviewProps {
   documentId: string;
 }
 
-function PDFViewer({ url }: { url: string }) {
-  return (
-    <object data={url} type="application/pdf" width="100%" height="600px">
-      <p>
-        Unable to display PDF file.{" "}
-        <a href={url} target="_blank" rel="noopener noreferrer">
-          Download
-        </a>{" "}
-        instead.
-      </p>
-    </object>
-  );
-}
-
 export default function DocumentPreview({ documentId }: DocumentPreviewProps) {
   const [document, setDocument] = useState<DocumentType | null>(null);
 
@@ -58,12 +44,23 @@ export default function DocumentPreview({ documentId }: DocumentPreviewProps) {
         );
       case "application":
         if (document.type === "application/pdf") {
-          return <PDFViewer url={document.url} />;
+          // Use Google Docs Viewer for PDF files
+          return (
+            <iframe
+              src={`https://docs.google.com/viewer?url=${encodeURIComponent(
+                document.url
+              )}&embedded=true`}
+              width="100%"
+              height="600px"
+              frameBorder="0"
+            />
+          );
         } else if (
           ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(
             fileExtension || ""
           )
         ) {
+          // Handle other document types as needed
           return (
             <iframe
               src={`https://docs.google.com/gview?url=${encodeURIComponent(
