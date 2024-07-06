@@ -80,8 +80,8 @@ const UploadForm = () => {
           file:rounded-full file:border-0
           file:text-sm file:font-semibold
           file:cursor-pointer
-          file:bg-[#f20819]/20 file:text-[#f20819]
-          hover:file:bg-[#f20819]/70 hover:file:text-white file:transition-all file:duration-300"
+          file:bg-[#f20819]/70 file:text-[#fff]
+          hover:file:bg-[#fff]/20 hover:file:text-[#f20819] file:transition-all file:duration-300"
       />
       {error && <p className="text-red-500">{error}</p>}
       <button

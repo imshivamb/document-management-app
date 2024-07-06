@@ -31,6 +31,19 @@ export default function DocumentList() {
     setFilteredDocuments(filtered);
   };
 
+  const deleteDocument = async (id: string) => {
+    console.log("Deleting document with id:", id);
+    const res = await fetch(`api/documents/${id}`, {
+      method: "DELETE",
+    });
+
+    if (res.ok) {
+      setDocuments(documents.filter((doc) => doc.id !== id));
+    } else {
+      console.error("Unable to delete the document");
+    }
+  };
+
   return (
     <div>
       {documents.length > 0 && (
@@ -46,16 +59,26 @@ export default function DocumentList() {
         {filteredDocuments.length > 0 ? (
           filteredDocuments.map((doc) => (
             <li key={doc.id} className="border p-4 rounded shadow">
-              <Link
-                href={`/documents/${doc.id}`}
-                className="text-[#f20819] hover:underline"
-              >
-                {doc.name}
-              </Link>
-              <p className="text-sm text-gray-600">
-                Size: {doc.size} bytes, Uploaded:{" "}
-                {new Date(doc.uploadDate).toLocaleString()}
-              </p>
+              <div className="flex items-center justify-between">
+                <div>
+                  <Link
+                    href={`/documents/${doc.id}`}
+                    className="text-[#f20819] hover:underline"
+                  >
+                    {doc.name}
+                  </Link>
+                  <p className="text-sm text-gray-600">
+                    Size: {doc.size} bytes, Uploaded:{" "}
+                    {new Date(doc.uploadDate).toLocaleString()}
+                  </p>
+                </div>
+                <button
+                  onClick={() => deleteDocument(doc.id)}
+                  className="bg-red-600 hover:bg-red-800 text-white px-3 py-1 text-xs rounded-full"
+                >
+                  Delete
+                </button>
+              </div>
             </li>
           ))
         ) : (

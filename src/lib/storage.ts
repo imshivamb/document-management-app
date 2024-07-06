@@ -64,3 +64,15 @@ export async function getDocument(id: string, userId: string): Promise<Document 
   
   return result[0] || null;
 }
+
+export async function deleteDocument(id: string, userId: string): Promise<void> {
+  const result = await db.delete(documents).where(and(
+    eq(documents.id, id),
+    eq(documents.userId, userId)
+  ))
+  .execute();
+  
+  if (result.rowCount === 0) {
+    throw new Error('Document not found or you do not have permission to delete it');
+  }
+}
