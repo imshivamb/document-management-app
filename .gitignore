@@ -15,6 +15,7 @@
 
 # production
 /build
+/uploads
 
 # misc
 .DS_Store
@@ -36,4 +37,3 @@ yarn-error.log*
 next-env.d.ts
 
 
-drizzle.config.ts
