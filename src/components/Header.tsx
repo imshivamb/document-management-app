@@ -2,15 +2,12 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { data: session } = useSession();
-  const router = useRouter();
 
   const handleSignOut = async () => {
-    await signOut();
-    router.push("/");
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
