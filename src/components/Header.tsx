@@ -2,9 +2,16 @@
 
 import { signIn, signOut, useSession } from "next-auth/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function Header() {
   const { data: session } = useSession();
+  const router = useRouter();
+
+  const handleSignOut = async () => {
+    await signOut();
+    router.push("/");
+  };
 
   return (
     <header className="bg-white shadow-md text-[#f20819] p-4">
@@ -22,7 +29,7 @@ export default function Header() {
                 <li>
                   <button
                     className="bg-[#f20819] hover:bg-[#f20819] text-white px-5 py-2 rounded-full hover:-translate-y-1 transition-all ease-in-out duration-300 hover:shadow-md"
-                    onClick={() => signOut()}
+                    onClick={handleSignOut}
                   >
                     Sign out
                   </button>

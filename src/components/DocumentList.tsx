@@ -25,10 +25,12 @@ export default function DocumentList() {
   };
 
   const filterDocuments = () => {
-    const filtered = documents.filter((doc) =>
-      doc.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-    setFilteredDocuments(filtered);
+    if (documents.length > 0) {
+      const filtered = documents.filter((doc) =>
+        doc.name.toLowerCase().includes(searchQuery.toLowerCase())
+      );
+      setFilteredDocuments(filtered);
+    }
   };
 
   const deleteDocument = async (id: string) => {
