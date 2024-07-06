@@ -14,12 +14,6 @@ export default function Header() {
         </Link>
         <nav>
           <ul className="flex space-x-4 items-center">
-            <li>
-              <Link href="/documents">Documents</Link>
-            </li>
-            <li>
-              <Link href="/upload">Upload</Link>
-            </li>
             {session ? (
               <>
                 <li>
